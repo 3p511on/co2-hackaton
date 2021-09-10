@@ -1,8 +1,6 @@
 'use strict';
 
-require('dotenv').config();
+const Main = require('./Main');
 
-const HTTPLoader = require('./HTTPLoader');
-
-const server = new HTTPLoader();
-server.initialize();
+const mainApp = new Main();
+module.exports = mainApp;

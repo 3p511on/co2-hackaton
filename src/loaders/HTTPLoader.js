@@ -6,13 +6,14 @@ const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');
 
-const Route = require('./structures/Route');
-const FileUtils = require('./utils/FileUtils');
+const Route = require('../structures/Route');
+const FileUtils = require('../utils/FileUtils');
 
 const { COOKIE_SECRET } = process.env;
 
 module.exports = class HTTPLoader {
-  constructor() {
+  constructor(mainApp) {
+    this.mainApp = mainApp;
     this.httpServer = null;
     this.httpRoutes = [];
   }
@@ -27,6 +28,11 @@ module.exports = class HTTPLoader {
     this.app.use(express.json());
     this.app.use(express.static('public'));
     this.app.use(cookieParser(COOKIE_SECRET));
+
+    this.app.use((req, res, next) => {
+      Object.assign(req, { database: this.mainApp.database });
+      next();
+    });
 
     this.app.use(
       morgan(

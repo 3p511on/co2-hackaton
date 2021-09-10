@@ -2,20 +2,19 @@
 
 const { Router } = require('express');
 
-const welcomeHandler = require('../handlers/panel/[index]');
 const Route = require('../structures/Route');
+const checkAuth = require('../utils/checkAuth');
 
 module.exports = class extends Route {
   constructor() {
-    super('');
+    super('auth', '/api');
   }
 
   register(app) {
     const router = Router();
 
-    // Welcome page
-    // TODO: Redirect to panel if logged in
-    router.get('/', welcomeHandler);
+    router.post('/login', require('../handlers/auth/login'));
+    router.get('/logout', checkAuth, require('../handlers/auth/logout'));
 
     app.use(this.path, router);
   }
